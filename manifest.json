@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Prompt Optimizer",
+  "description": "Optimize prompts inline on chat-based sites and via popup.",
+  "version": "0.1.0",
+  "permissions": ["storage", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://manus.im/*",
+    "https://gemini.google.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Prompt Optimizer"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*",
+        "https://manus.im/*",
+        "https://gemini.google.com/*"
+      ],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

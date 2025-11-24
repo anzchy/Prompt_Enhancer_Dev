@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Optimizer</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 12px;
+        min-width: 320px;
+        color: #111;
+      }
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 14px;
+        resize: vertical;
+        min-height: 80px;
+      }
+      .stack {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+      }
+      button {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background: #f5f5f5;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      select {
+        padding: 6px 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+      }
+      .label {
+        font-weight: 600;
+        margin: 12px 0 4px;
+        font-size: 13px;
+      }
+      .status {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div class="label">原始 Prompt</div>
+      <textarea id="inputPrompt" placeholder="输入需要优化的 Prompt"></textarea>
+    </div>
+
+    <div class="stack">
+      <button id="optimizeBtn">✨ 优化</button>
+      <button id="copyBtn">📋 复制优化结果</button>
+      <button id="clearBtn">🧹 清空</button>
+      <select id="styleSelect">
+        <option value="default">通用</option>
+      </select>
+    </div>
+
+    <div>
+      <div class="label">优化后 Prompt</div>
+      <textarea id="outputPrompt" placeholder="优化结果会显示在这里"></textarea>
+    </div>
+
+    <div class="status" id="statusText"></div>
+
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>

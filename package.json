@@ -1,0 +1,16 @@
+{
+  "name": "prompt-enhancer-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome MV3 extension that optimizes prompts inline and via popup.",
+  "scripts": {
+    "dev": "node scripts/build.js --watch",
+    "build": "node scripts/build.js",
+    "lint": "echo \"lint not configured\"",
+    "test": "echo \"tests not configured\"",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0"
+  }
+}
