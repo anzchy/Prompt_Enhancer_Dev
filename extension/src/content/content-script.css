@@ -1,6 +1,7 @@
-/* Prompt Optimizer Button Styles for ChatGPT */
+/* Prompt Optimizer Button Styles - Multi-Site Support */
+/* Supports: ChatGPT, Manus, Gemini */
 
-/* Button base styles - matches ChatGPT's voice button pattern */
+/* Button base styles - pill style design works across all sites */
 .prompt-enhancer-btn {
   /* Layout */
   display: flex;
@@ -10,7 +11,7 @@
   padding: 0 16px;
   margin-left: 8px;
 
-  /* Shape - pill style like ChatGPT buttons */
+  /* Shape - pill style consistent across all sites */
   border-radius: 9999px;
   border: none;
 
@@ -30,6 +31,7 @@
   /* Prevent text selection */
   user-select: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 /* Hover state */
@@ -55,7 +57,15 @@ html.dark .prompt-enhancer-btn {
   outline-offset: 2px;
 }
 
-/* Loading state animation (optional enhancement) */
+/* Loading state animation */
 .prompt-enhancer-btn.loading {
   opacity: 0.8;
 }
+
+/* Site-specific adjustments if needed */
+
+/* Manus.im - uses flex containers, margins adjust well */
+/* No special styles needed - pill style is generic enough */
+
+/* Gemini - uses Material Design, margins adjust well */
+/* No special styles needed - pill style works with Material buttons */

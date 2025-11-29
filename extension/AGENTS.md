@@ -35,3 +35,125 @@
 
 ## Architecture Overview
 - Canonical flow: content script reads the prompt → sends `OPTIMIZE_PROMPT` to background → background pulls config from storage → calls the LLM endpoint → returns optimized text → content script writes back to the target input. Popup and options share the same message contract and storage utilities.
+
+## Site Handler Pattern (Content Script Multi-Site Support)
+
+The content script uses a handler-based architecture to support multiple chat platforms:
+
+### Handler Structure
+- **Location**: `src/content/sites/` - each site gets its own handler file
+  - `chatgpt.ts` - ChatGPT handler
+  - `manus.ts` - Manus.im handler
+  - `gemini.ts` - Gemini handler
+- **Interface**: All handlers implement `SiteHandler` interface defined in `src/content/shared/types.ts`
+- **Base Class**: `BaseSiteHandler` provides common functionality (selector matching, strategy logging)
+
+### How to Add Support for a New Site
+
+1. **Create handler file** in `src/content/sites/newsite.ts`:
+   ```typescript
+   import { BaseSiteHandler } from '../shared/types';
+
+   export class NewSiteHandler extends BaseSiteHandler {
+     hostPatterns = ['newsite.com'];
+     name = 'NewSite';
+     inputSelectors = [
+       'textarea[placeholder="..."]',  // Priority 1: Most specific
+       'textarea',                     // Priority 2: Fallback
+     ];
+
+     insertButton(button: HTMLButtonElement, input: HTMLElement): boolean {
+       // Strategy 1: Ideal placement
+       // Strategy 2: Acceptable placement
+       // Strategy 3+: Last resorts
+     }
+   }
+   ```
+
+2. **Update manifest.json** - add host permissions:
+   ```json
+   "host_permissions": [
+     "https://newsite.com/*"
+   ]
+   ```
+
+3. **Import in index.ts** and add to handlers array:
+   ```typescript
+   import { NewSiteHandler } from './sites/newsite.ts';
+
+   const handlers: SiteHandler[] = [
+     new ChatGptHandler(),
+     new ManusHandler(),
+     new GeminiHandler(),
+     new NewSiteHandler()
+   ];
+   ```
+
+4. **Test**:
+   - Run `npm run build` to verify compilation
+   - Load unpacked extension (`extension/dist/`)
+   - Navigate to newsite.com and verify button appears
+   - Test prompt optimization works end-to-end
+   - Verify fallback strategies work (check console logs)
+
+### Fallback Strategy Pattern
+
+Each site implements multiple insertion strategies to handle DOM variations:
+
+**Example: ChatGPT (4-level fallback)**
+1. Find specific button (composer-plus-btn) and append next to it
+2. Find grid-area container and append to flex element
+3. Insert before target's parent element
+4. Use insertAdjacentElement as last resort
+
+**Example: Manus (4-level fallback)**
+1. Find flex container with buttons, insert next to plus button
+2. Append to flex.gap-2.items-center container
+3. Append to action bar (.px-3.flex.gap-2)
+4. Insert before textarea parent
+
+**Example: Gemini (5-level fallback)**
+1. Find leading-actions-wrapper, insert after upload button
+2. Append to leading-actions-wrapper
+3. Insert after rich-textarea in text-input-field wrapper
+4. Insert before ql-editor parent
+5. Use insertAdjacentElement as fallback
+
+Each strategy is logged to console for debugging (`Strategy N succeeded/failed`)
+
+### Input Selector Priority
+
+Handlers define `inputSelectors` array with priority order:
+- **Index 0**: Most specific selector (exact attribute match)
+- **Middle indices**: Partial matches with `*=` operator for robustness
+- **Last index**: Generic fallback that always matches
+
+Example (Manus):
+```typescript
+inputSelectors = [
+  'textarea[placeholder="Assign a task or ask anything"]',  // Exact
+  'textarea[placeholder*="Assign"]',                         // Partial
+  'textarea[placeholder*="ask"]',                            // Partial (case-insensitive)
+  'textarea'                                                  // Generic fallback
+];
+```
+
+This ensures robustness against placeholder text changes (i18n, UI updates) while maintaining preferential matching for current selectors.
+
+### Custom Value Getters/Setters
+
+Override `getPromptValue()` and `setPromptValue()` for non-standard input types:
+
+**Example: Gemini Quill Editor**
+```typescript
+getPromptValue(el: HTMLElement): string {
+  // Quill uses contenteditable div, not textarea
+  return (el.textContent || '').trim();
+}
+
+setPromptValue(el: HTMLElement, value: string): void {
+  // Update HTML and dispatch events for framework detection
+  el.innerHTML = `<p>${escapeHtml(value)}</p>`;
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+}
+```

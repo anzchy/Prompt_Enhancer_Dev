@@ -34,17 +34,17 @@ description: "Task list for multi-site button injection support (ChatGPT, Manus,
 
 **⚠️ CRITICAL**: This phase must complete before new site implementations
 
-- [ ] T001 Create `extension/src/content/shared/` directory structure
-- [ ] T002 [P] Extract `getPromptValue()` to `extension/src/content/shared/prompt-utils.ts`
-- [ ] T003 [P] Extract `setPromptValue()` to `extension/src/content/shared/prompt-utils.ts`
-- [ ] T004 [P] Create `extension/src/content/shared/types.ts` with `SiteHandler` interface
-- [ ] T005 Create `extension/src/content/sites/` directory structure
-- [ ] T006 Create `extension/src/content/shared/button-controller.ts` with extracted shared functions:
+- [x] T001 Create `extension/src/content/shared/` directory structure
+- [x] T002 [P] Extract `getPromptValue()` to `extension/src/content/shared/prompt-utils.ts`
+- [x] T003 [P] Extract `setPromptValue()` to `extension/src/content/shared/prompt-utils.ts`
+- [x] T004 [P] Create `extension/src/content/shared/types.ts` with `SiteHandler` interface
+- [x] T005 Create `extension/src/content/sites/` directory structure
+- [x] T006 Create `extension/src/content/shared/button-controller.ts` with extracted shared functions:
   - Extract `handleOptimize()` from current index.ts → button-controller.ts (responsible for sending optimization request to background, updating UI with result)
   - Extract `setLoading()` from current index.ts → button-controller.ts (manages button disabled state and text during async operations)
   - Create new `createButton()` function in button-controller.ts (creates button element with class and event listener)
-- [ ] T007 [P] Add shared MutationObserver helper to prevent duplicate buttons and support re-mount after SPA navigation
-- [ ] T008 Confirm `extension/manifest.json` includes host permissions for `https://manus.im/*` and `https://gemini.google.com/*` (add if missing)
+- [x] T007 [P] Add shared MutationObserver helper to prevent duplicate buttons and support re-mount after SPA navigation
+- [x] T008 Confirm `extension/manifest.json` includes host permissions for `https://manus.im/*` and `https://gemini.google.com/*` (add if missing)
 
 **Checkpoint**: Shared infrastructure ready, base SiteHandler pattern established
 
